@@ -1,0 +1,274 @@
+type: "transformation"
+version: "1.0"
+pipeline:
+  components:
+    ORDER_DETAIL:
+      type: "table-input"
+      parameters:
+        componentName: "ORDER_DETAIL"
+        database: "[Environment Default]"
+        schema: "${env_raw_schema}"
+        targetTable: "ORDER_DETAIL"
+        columnNames:
+        - "ORDER_DETAIL_ID"
+        - "LINE_NUMBER"
+        - "MENU_ITEM_ID"
+        - "QUANTITY"
+        - "UNIT_PRICE"
+        - "PRICE"
+        - "ORDER_ID"
+        timeOffset:
+    ORDER_HEADER:
+      type: "table-input"
+      parameters:
+        componentName: "ORDER_HEADER"
+        database: "[Environment Default]"
+        schema: "${env_raw_schema}"
+        targetTable: "ORDER_HEADER"
+        columnNames:
+        - "ORDER_ID"
+        - "TRUCK_ID"
+        - "ORDER_TS"
+        - "ORDER_AMOUNT"
+        - "ORDER_TAX_AMOUNT"
+        - "ORDER_DISCOUNT_AMOUNT"
+        - "ORDER_TOTAL"
+        - "LOCATION_ID"
+        - "CUSTOMER_ID"
+        timeOffset:
+    TRUCK:
+      type: "table-input"
+      parameters:
+        componentName: "TRUCK"
+        database: "[Environment Default]"
+        schema: "${env_raw_schema}"
+        targetTable: "TRUCK"
+        columnNames:
+        - "TRUCK_ID"
+        - "PRIMARY_CITY"
+        - "REGION"
+        - "COUNTRY"
+        - "FRANCHISE_FLAG"
+        - "FRANCHISE_ID"
+        timeOffset:
+    MENU:
+      type: "table-input"
+      parameters:
+        componentName: "MENU"
+        database: "[Environment Default]"
+        schema: "${env_raw_schema}"
+        targetTable: "MENU"
+        columnNames:
+        - "MENU_ITEM_ID"
+        - "MENU_ITEM_NAME"
+        - "TRUCK_BRAND_NAME"
+        - "MENU_TYPE"
+        timeOffset:
+    FRANCHISE:
+      type: "table-input"
+      parameters:
+        componentName: "FRANCHISE"
+        database: "[Environment Default]"
+        schema: "${env_raw_schema}"
+        targetTable: "FRANCHISE"
+        columnNames:
+        - "FRANCHISE_ID"
+        - "FIRST_NAME"
+        - "LAST_NAME"
+        timeOffset:
+    LOCATION:
+      type: "table-input"
+      parameters:
+        componentName: "LOCATION"
+        database: "[Environment Default]"
+        schema: "${env_raw_schema}"
+        targetTable: "LOCATION"
+        columnNames:
+        - "LOCATION_ID"
+        timeOffset:
+    CUSTOMER_LOYALTY:
+      type: "table-input"
+      parameters:
+        componentName: "CUSTOMER_LOYALTY"
+        database: "[Environment Default]"
+        schema: "${env_raw_schema}"
+        targetTable: "CUSTOMER_LOYALTY"
+        columnNames:
+        - "CUSTOMER_ID"
+        - "FIRST_NAME"
+        - "LAST_NAME"
+        - "E_MAIL"
+        - "PHONE_NUMBER"
+        - "CHILDREN_COUNT"
+        - "GENDER"
+        - "MARITAL_STATUS"
+        timeOffset:
+    Join:
+      type: "join"
+      sources:
+      - "ORDER_DETAIL"
+      - "ORDER_HEADER"
+      - "TRUCK"
+      - "MENU"
+      - "FRANCHISE"
+      - "LOCATION"
+      - "CUSTOMER_LOYALTY"
+      parameters:
+        componentName: "Join"
+        mainTable: "ORDER_DETAIL"
+        mainTableAlias: "od"
+        joins:
+        - - "ORDER_HEADER"
+          - "oh"
+          - "Left"
+        - - "TRUCK"
+          - "t"
+          - "Left"
+        - - "MENU"
+          - "m"
+          - "Left"
+        - - "FRANCHISE"
+          - "f"
+          - "Left"
+        - - "LOCATION"
+          - "l"
+          - "Left"
+        - - "CUSTOMER_LOYALTY"
+          - "cl"
+          - "Left"
+        joinExpressions:
+        - - "\"od\".\"ORDER_ID\" = \"oh\".\"ORDER_ID\""
+          - "od_Left_oh"
+        - - "\"oh\".\"TRUCK_ID\" = \"t\".\"TRUCK_ID\""
+          - "od_Left_t"
+        - - "\"od\".\"MENU_ITEM_ID\" = \"m\".\"MENU_ITEM_ID\""
+          - "od_Left_m"
+        - - "\"t\".\"FRANCHISE_ID\" = \"f\".\"FRANCHISE_ID\""
+          - "od_Left_f"
+        - - "\"oh\".\"LOCATION_ID\" = \"l\".\"LOCATION_ID\""
+          - "od_Left_l"
+        - - "\"oh\".\"CUSTOMER_ID\" = \"cl\".\"CUSTOMER_ID\""
+          - "od_Left_cl"
+        columnMappings:
+        - - "oh.ORDER_ID"
+          - "ORDER_ID"
+        - - "oh.TRUCK_ID"
+          - "TRUCK_ID"
+        - - "oh.ORDER_TS"
+          - "ORDER_TS"
+        - - "od.ORDER_DETAIL_ID"
+          - "ORDER_DETAIL_ID"
+        - - "od.LINE_NUMBER"
+          - "LINE_NUMBER"
+        - - "m.TRUCK_BRAND_NAME"
+          - "TRUCK_BRAND_NAME"
+        - - "m.MENU_TYPE"
+          - "MENU_TYPE"
+        - - "t.PRIMARY_CITY"
+          - "PRIMARY_CITY"
+        - - "t.REGION"
+          - "REGION"
+        - - "t.COUNTRY"
+          - "COUNTRY"
+        - - "t.FRANCHISE_FLAG"
+          - "FRANCHISE_FLAG"
+        - - "f.FIRST_NAME"
+          - "FRANCHISEE_FIRST_NAME"
+        - - "f.LAST_NAME"
+          - "FRANCHISEE_LAST_NAME"
+        - - "l.LOCATION_ID"
+          - "LOCATION_ID"
+        - - "cl.CUSTOMER_ID"
+          - "CUSTOMER_ID"
+        - - "cl.FIRST_NAME"
+          - "FIRST_NAME"
+        - - "cl.LAST_NAME"
+          - "LAST_NAME"
+        - - "cl.E_MAIL"
+          - "E_MAIL"
+        - - "cl.PHONE_NUMBER"
+          - "PHONE_NUMBER"
+        - - "cl.CHILDREN_COUNT"
+          - "CHILDREN_COUNT"
+        - - "cl.GENDER"
+          - "GENDER"
+        - - "cl.MARITAL_STATUS"
+          - "MARITAL_STATUS"
+        - - "od.MENU_ITEM_ID"
+          - "MENU_ITEM_ID"
+        - - "m.MENU_ITEM_NAME"
+          - "MENU_ITEM_NAME"
+        - - "od.QUANTITY"
+          - "QUANTITY"
+        - - "od.UNIT_PRICE"
+          - "UNIT_PRICE"
+        - - "od.PRICE"
+          - "PRICE"
+        - - "oh.ORDER_AMOUNT"
+          - "ORDER_AMOUNT"
+        - - "oh.ORDER_TAX_AMOUNT"
+          - "ORDER_TAX_AMOUNT"
+        - - "oh.ORDER_DISCOUNT_AMOUNT"
+          - "ORDER_DISCOUNT_AMOUNT"
+        - - "oh.ORDER_TOTAL"
+          - "ORDER_TOTAL"
+    ORDERS_V:
+      type: "create-view"
+      sources:
+      - "Join"
+      parameters:
+        componentName: "ORDERS_V"
+        database: "[Environment Default]"
+        schema: "${env_reporting_schema}"
+        viewName: "ORDERS_V"
+        secureView: "No"
+        viewType: "Standard"
+      postProcessing:
+        updateScalarVariables:
+design:
+  components:
+    ORDER_DETAIL:
+      position:
+        x: 0
+        "y": 0
+      tempMetlId: 1
+    ORDER_HEADER:
+      position:
+        x: 0
+        "y": 80
+      tempMetlId: 2
+    TRUCK:
+      position:
+        x: 0
+        "y": 160
+      tempMetlId: 3
+    MENU:
+      position:
+        x: 0
+        "y": 240
+      tempMetlId: 4
+    FRANCHISE:
+      position:
+        x: 0
+        "y": 320
+      tempMetlId: 5
+    LOCATION:
+      position:
+        x: 0
+        "y": 400
+      tempMetlId: 6
+    CUSTOMER_LOYALTY:
+      position:
+        x: 0
+        "y": 480
+      tempMetlId: 7
+    Join:
+      position:
+        x: 290
+        "y": 240
+      tempMetlId: 8
+    ORDERS_V:
+      position:
+        x: 410
+        "y": 240
+      tempMetlId: 9

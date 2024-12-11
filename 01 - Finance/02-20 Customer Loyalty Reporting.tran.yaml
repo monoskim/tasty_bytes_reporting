@@ -1,0 +1,158 @@
+type: "transformation"
+version: "1.0"
+pipeline:
+  components:
+    CUSTOMER_LOYALTY:
+      type: "table-input"
+      parameters:
+        componentName: "CUSTOMER_LOYALTY"
+        database: "[Environment Default]"
+        schema: "${env_raw_schema}"
+        targetTable: "CUSTOMER_LOYALTY"
+        columnNames:
+        - "CUSTOMER_ID"
+        - "CITY"
+        - "COUNTRY"
+        - "FIRST_NAME"
+        - "LAST_NAME"
+        - "PHONE_NUMBER"
+        - "E_MAIL"
+        timeOffset:
+    ORDER_HEADER:
+      type: "table-input"
+      parameters:
+        componentName: "ORDER_HEADER"
+        database: "[Environment Default]"
+        schema: "${env_raw_schema}"
+        targetTable: "ORDER_HEADER"
+        columnNames:
+        - "LOCATION_ID"
+        - "ORDER_TOTAL"
+        - "CUSTOMER_ID"
+        timeOffset:
+    Join:
+      type: "join"
+      sources:
+      - "ORDER_HEADER"
+      - "CUSTOMER_LOYALTY"
+      parameters:
+        componentName: "Join"
+        mainTable: "CUSTOMER_LOYALTY"
+        mainTableAlias: "cl"
+        joins:
+        - - "ORDER_HEADER"
+          - "oh"
+          - "Left"
+        joinExpressions:
+        - - "\"cl\".\"CUSTOMER_ID\" = \"oh\".\"CUSTOMER_ID\""
+          - "cl_Left_oh"
+        columnMappings:
+        - - "cl.CUSTOMER_ID"
+          - "CUSTOMER_ID"
+        - - "cl.CITY"
+          - "CITY"
+        - - "cl.COUNTRY"
+          - "COUNTRY"
+        - - "cl.FIRST_NAME"
+          - "FIRST_NAME"
+        - - "cl.LAST_NAME"
+          - "LAST_NAME"
+        - - "cl.PHONE_NUMBER"
+          - "PHONE_NUMBER"
+        - - "cl.E_MAIL"
+          - "E_MAIL"
+        - - "oh.LOCATION_ID"
+          - "LOCATION_ID"
+        - - "oh.ORDER_TOTAL"
+          - "ORDER_TOTAL"
+    Aggregate:
+      type: "aggregate"
+      sources:
+      - "Join"
+      parameters:
+        componentName: "Aggregate"
+        groupings:
+        - "CUSTOMER_ID"
+        - "CITY"
+        - "COUNTRY"
+        - "FIRST_NAME"
+        - "LAST_NAME"
+        - "PHONE_NUMBER"
+        - "E_MAIL"
+        aggregations:
+        - - "ORDER_TOTAL"
+          - "Sum"
+        - - "LOCATION_ID"
+          - "Array Aggregate Distinct"
+        groupingType: "Group By"
+    Rename:
+      type: "rename"
+      sources:
+      - "Aggregate"
+      parameters:
+        componentName: "Rename"
+        columnMapping:
+        - - "CUSTOMER_ID"
+          - "CUSTOMER_ID"
+        - - "CITY"
+          - "CITY"
+        - - "COUNTRY"
+          - "COUNTRY"
+        - - "FIRST_NAME"
+          - "FIRST_NAME"
+        - - "LAST_NAME"
+          - "LAST_NAME"
+        - - "PHONE_NUMBER"
+          - "PHONE_NUMBER"
+        - - "E_MAIL"
+          - "E_MAIL"
+        - - "sum_ORDER_TOTAL"
+          - "TOTAL_SALES"
+        - - "array_agg_distinct_LOCATION_ID"
+          - "VISITED_LOCATION_IDS_ARRAY"
+        includeInputColumns: "No"
+    CUSTOMER_LOYALTY_METRICS_V:
+      type: "create-view"
+      sources:
+      - "Rename"
+      parameters:
+        componentName: "CUSTOMER_LOYALTY_METRICS_V"
+        database: "[Environment Default]"
+        schema: "${env_reporting_schema}"
+        viewName: "CUSTOMER_LOYALTY_METRICS_V"
+        secureView: "No"
+        viewType: "Standard"
+      postProcessing:
+        updateScalarVariables:
+design:
+  components:
+    CUSTOMER_LOYALTY:
+      position:
+        x: 0
+        "y": 0
+      tempMetlId: 1
+    ORDER_HEADER:
+      position:
+        x: 0
+        "y": 100
+      tempMetlId: 2
+    Join:
+      position:
+        x: 170
+        "y": 60
+      tempMetlId: 3
+    Aggregate:
+      position:
+        x: 290
+        "y": 60
+      tempMetlId: 4
+    Rename:
+      position:
+        x: 410
+        "y": 60
+      tempMetlId: 5
+    CUSTOMER_LOYALTY_METRICS_V:
+      position:
+        x: 530
+        "y": 60
+      tempMetlId: 6

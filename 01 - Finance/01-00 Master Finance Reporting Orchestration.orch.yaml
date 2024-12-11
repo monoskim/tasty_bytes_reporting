@@ -1,0 +1,62 @@
+type: "orchestration"
+version: "1.0"
+pipeline:
+  components:
+    Start:
+      type: "start"
+      transitions:
+        unconditional:
+        - "Run 02-30 Truck Reporting"
+        - "Run 02-10 Orders Reporting"
+        - "Run 02-20 Customer Loyalty Reporting"
+      parameters:
+        componentName: "Start"
+    Run 02-30 Truck Reporting:
+      type: "run-transformation"
+      parameters:
+        componentName: "Run 02-30 Truck Reporting"
+        transformationJob: "02 - Staging/02-30 Truck Reporting"
+        setScalarVariables:
+        setGridVariables:
+      postProcessing:
+        updateScalarVariables:
+    Run 02-10 Orders Reporting:
+      type: "run-transformation"
+      parameters:
+        componentName: "Run 02-10 Orders Reporting"
+        transformationJob: "02 - Staging/02-10 Orders Reporting"
+        setScalarVariables:
+        setGridVariables:
+      postProcessing:
+        updateScalarVariables:
+    Run 02-20 Customer Loyalty Reporting:
+      type: "run-transformation"
+      parameters:
+        componentName: "Run 02-20 Customer Loyalty Reporting"
+        transformationJob: "02 - Staging/02-20 Customer Loyalty Reporting"
+        setScalarVariables:
+        setGridVariables:
+      postProcessing:
+        updateScalarVariables:
+design:
+  components:
+    Start:
+      position:
+        x: 20
+        "y": 30
+      tempMetlId: 1
+    Run 02-30 Truck Reporting:
+      position:
+        x: 210
+        "y": 130
+      tempMetlId: 4
+    Run 02-10 Orders Reporting:
+      position:
+        x: 210
+        "y": -70
+      tempMetlId: 5
+    Run 02-20 Customer Loyalty Reporting:
+      position:
+        x: 210
+        "y": 30
+      tempMetlId: 6

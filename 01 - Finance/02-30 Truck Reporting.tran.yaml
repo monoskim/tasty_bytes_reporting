@@ -1,0 +1,72 @@
+type: "transformation"
+version: "1.0"
+pipeline:
+  components:
+    TRUCK:
+      type: "table-input"
+      parameters:
+        componentName: "TRUCK"
+        database: "[Environment Default]"
+        schema: "${env_raw_schema}"
+        targetTable: "TRUCK"
+        columnNames:
+        - "TRUCK_ID"
+        - "YEAR"
+        - "MAKE"
+        - "MODEL"
+        timeOffset:
+    Fix Ford Make Issue:
+      type: "calculator"
+      sources:
+      - "TRUCK"
+      parameters:
+        componentName: "Fix Ford Make Issue"
+        includeInputColumns: "Yes"
+        calculations:
+        - - "CASE\r\nWHEN \"MAKE\" = 'Ford_' THEN 'Ford'\r\nELSE \"MAKE\"\r\nEND"
+          - "MAKE"
+    Calc Truck Age Year:
+      type: "calculator"
+      sources:
+      - "Fix Ford Make Issue"
+      parameters:
+        componentName: "Calc Truck Age Year"
+        includeInputColumns: "Yes"
+        calculations:
+        - - "YEAR(CURRENT_DATE()) - \"YEAR\""
+          - "TRUCK_AGE_YEAR"
+    TRUCK_V:
+      type: "create-view"
+      sources:
+      - "Calc Truck Age Year"
+      parameters:
+        componentName: "TRUCK_V"
+        database: "[Environment Default]"
+        schema: "${env_reporting_schema}"
+        viewName: "TRUCK_V"
+        secureView: "No"
+        viewType: "Standard"
+      postProcessing:
+        updateScalarVariables:
+design:
+  components:
+    TRUCK:
+      position:
+        x: 0
+        "y": 0
+      tempMetlId: 1
+    Fix Ford Make Issue:
+      position:
+        x: 130
+        "y": 0
+      tempMetlId: 3
+    Calc Truck Age Year:
+      position:
+        x: 280
+        "y": 0
+      tempMetlId: 4
+    TRUCK_V:
+      position:
+        x: 420
+        "y": 0
+      tempMetlId: 5
