@@ -6,34 +6,34 @@ pipeline:
       type: "start"
       transitions:
         unconditional:
-        - "Run 02-30 Truck Reporting"
-        - "Run 02-10 Orders Reporting"
-        - "Run 02-20 Customer Loyalty Reporting"
+        - "Run 01-10 Orders Reporting"
+        - "Run 01-20 Customer Loyalty Reporting"
+        - "Run 01-30 Truck Reporting"
       parameters:
         componentName: "Start"
-    Run 02-30 Truck Reporting:
+    Run 01-10 Orders Reporting:
       type: "run-transformation"
       parameters:
-        componentName: "Run 02-30 Truck Reporting"
-        transformationJob: "02 - Staging/02-30 Truck Reporting"
+        componentName: "Run 01-10 Orders Reporting"
+        transformationJob: "01 - Finance/01-10 Orders Reporting"
         setScalarVariables:
         setGridVariables:
       postProcessing:
         updateScalarVariables:
-    Run 02-10 Orders Reporting:
+    Run 01-20 Customer Loyalty Reporting:
       type: "run-transformation"
       parameters:
-        componentName: "Run 02-10 Orders Reporting"
-        transformationJob: "02 - Staging/02-10 Orders Reporting"
+        componentName: "Run 01-20 Customer Loyalty Reporting"
+        transformationJob: "01 - Finance/01-20 Customer Loyalty Reporting"
         setScalarVariables:
         setGridVariables:
       postProcessing:
         updateScalarVariables:
-    Run 02-20 Customer Loyalty Reporting:
+    Run 01-30 Truck Reporting:
       type: "run-transformation"
       parameters:
-        componentName: "Run 02-20 Customer Loyalty Reporting"
-        transformationJob: "02 - Staging/02-20 Customer Loyalty Reporting"
+        componentName: "Run 01-30 Truck Reporting"
+        transformationJob: "01 - Finance/01-30 Truck Reporting"
         setScalarVariables:
         setGridVariables:
       postProcessing:
@@ -45,18 +45,18 @@ design:
         x: 20
         "y": 30
       tempMetlId: 1
-    Run 02-30 Truck Reporting:
+    Run 01-10 Orders Reporting:
       position:
-        x: 210
-        "y": 130
-      tempMetlId: 4
-    Run 02-10 Orders Reporting:
-      position:
-        x: 210
+        x: 240
         "y": -70
-      tempMetlId: 5
-    Run 02-20 Customer Loyalty Reporting:
+      tempMetlId: 7
+    Run 01-20 Customer Loyalty Reporting:
       position:
-        x: 210
+        x: 240
         "y": 30
-      tempMetlId: 6
+      tempMetlId: 8
+    Run 01-30 Truck Reporting:
+      position:
+        x: 240
+        "y": 130
+      tempMetlId: 9

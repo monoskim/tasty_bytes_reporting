@@ -7,6 +7,8 @@ pipeline:
       transitions:
         unconditional:
         - "Run 01-00 Master Finance Reporting Orchestration"
+        - "Run 02-00 Master Sales Reporting Orchestration"
+        - "Run 03-00 Master Product Reporting Orchestration"
       parameters:
         componentName: "Start"
     Run 01-00 Master Finance Reporting Orchestration:
@@ -14,6 +16,24 @@ pipeline:
       parameters:
         componentName: "Run 01-00 Master Finance Reporting Orchestration"
         orchestrationJob: "01 - Finance/01-00 Master Finance Reporting Orchestration"
+        setScalarVariables:
+        setGridVariables:
+      postProcessing:
+        updateScalarVariables:
+    Run 02-00 Master Sales Reporting Orchestration:
+      type: "run-orchestration"
+      parameters:
+        componentName: "Run 02-00 Master Sales Reporting Orchestration"
+        orchestrationJob: "02 - Sales/02-00 Master Sales Reporting Orchestration"
+        setScalarVariables:
+        setGridVariables:
+      postProcessing:
+        updateScalarVariables:
+    Run 03-00 Master Product Reporting Orchestration:
+      type: "run-orchestration"
+      parameters:
+        componentName: "Run 03-00 Master Product Reporting Orchestration"
+        orchestrationJob: "03 - Product/03-00 Master Product Reporting Orchestration"
         setScalarVariables:
         setGridVariables:
       postProcessing:
@@ -27,6 +47,16 @@ design:
       tempMetlId: 1
     Run 01-00 Master Finance Reporting Orchestration:
       position:
-        x: 100
-        "y": 10
+        x: 120
+        "y": -110
       tempMetlId: 2
+    Run 02-00 Master Sales Reporting Orchestration:
+      position:
+        x: 120
+        "y": 10
+      tempMetlId: 3
+    Run 03-00 Master Product Reporting Orchestration:
+      position:
+        x: 120
+        "y": 130
+      tempMetlId: 4
